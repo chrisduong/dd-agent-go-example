@@ -7,7 +7,10 @@ services:
     - "8080:8080"
     environment:
     - DATADOG_HOST=datadog # used by the web app to initialize the Datadog library
+    - DD_DOGSTATSD_SOCKET=/var/run/dd/dogstatd.sock
     depends_on: [datadog]
+    volumes:
+    - dd_socks:/var/run/dd
 
   datadog:
     build: datadog
@@ -21,7 +24,13 @@ services:
     - DD_SITE=datadoghq.eu
     - DD_DOGSTATSD_NON_LOCAL_TRAFFIC=true
     - DD_DOGSTATSD_ORIGIN_DETECTION=true
+    - DD_DOGSTATSD_SOCKET=/var/run/dd/dogstatd.sock
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - /proc/:/host/proc/:ro
     - /sys/fs/cgroup:/host/sys/fs/cgroup:ro
+    - dd_socks:/var/run/dd
+    # https://github.com/DataDog/datadog-agent/blob/master/pkg/config/config_template.yaml#L1014-L1018
+    pid: host
+volumes:
+  dd_socks:

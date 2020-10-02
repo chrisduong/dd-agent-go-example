@@ -16,12 +16,17 @@ func helloHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	ddHost := os.Getenv("DATADOG_HOST")
-	if len(ddHost) == 0 {
-		ddHost = "127.0.0.1"
-	}
+	ddSock := os.Getenv("DD_DOGSTATSD_SOCKET")
 
-	statsd, err := statsd.New(fmt.Sprintf("%s:8125", ddHost),
+	// ddHost := os.Getenv("DATADOG_HOST")
+	// if len(ddHost) == 0 {
+	// 	ddHost = "127.0.0.1"
+	// }
+
+	// statsd, err := statsd.New(fmt.Sprintf("%s:8125", ddHost),
+	// 	statsd.WithTags([]string{"env:test", "service:go-example"}),
+	// )
+	statsd, err := statsd.New(fmt.Sprintf("unix://%s", ddSock),
 		statsd.WithTags([]string{"env:test", "service:go-example"}),
 	)
 	if err != nil {
