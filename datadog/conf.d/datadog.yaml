@@ -15,4 +15,4 @@ apm_config:
 # Use java container support
 jmx_use_container_support: true
 
-log_level: 'info' # debug
+log_level: 'debug' # debug
